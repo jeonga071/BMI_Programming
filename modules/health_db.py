@@ -103,8 +103,3 @@ class Health_Manager:
 
         user_info = Health_info(id, name, birth, gender, height, weight, bmi, status)
         self.datas.append(user_info)
-manager = Health_Manager()
-manager.load_file()
-#manager.random_id()
-#manager.add_file()
-#manager.update_file()
