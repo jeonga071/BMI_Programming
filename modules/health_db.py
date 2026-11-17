@@ -48,7 +48,7 @@ class Health_Manager:
             self.file_path_csv = os.path.join(os.path.dirname(__file__), "..", "data", "data.csv")
 
             # txt
-            #self.file_path_txt = os.path.join(os.path.dirname(__file__), "..", "data", "data.txt")
+            self.file_path_txt = os.path.join(os.path.dirname(__file__), "..", "data", "data.txt")
 
             # pkl
             # 목적: pkl 사용법
@@ -63,43 +63,46 @@ class Health_Manager:
 
     def load_file(self):
         global last_id
+
+        self.datas = []
+
         # json
-        # with open(self.file_path_json, "r", encoding= "utf-8") as f:
-        #     data = json.load(f)
-        #     # 파일 읽기
+        with open(self.file_path_json, "r", encoding= "utf-8") as f:
+            data = json.load(f)
+            # 파일 읽기
 
         # csv
         # 데이터 읽을 때: stf-8-sig(BOM 문자가 포함 될 경우 사용)
         # with open(self.file_path_csv, "r", encoding="utf-8-sig") as f:
         #     data = csv.DictReader(f)
-
+        
         # pkl
-        info1 = Health_info("P2026-0001", "홍길동", 1995, "남", 175, 72.5, 23.67, "과체중")
-        info2 = Health_info("P2026-0002", "김영희", 1998, "여", 162, 52, 19.81, "정상")
-        self.datas.append(info1)
-        self.datas.append(info2)
+        # with open(self.file_path_pkl, "rb") as f:
+        #     data = pickle.load(f)
 
-        with open(self.file_path_pkl, "wb") as f:
-            pickle.dump(self.datas, f)
+        for item in data:
+            info = Health_info(item["id"],
+                               item["name"],
+                               item["birth"],
+                               item["gender"],
+                               item["height"],
+                               item["weight"],
+                               item["bmi"],
+                               item["status"])
+            self.datas.append(info)
+        last_id = int(item["id"].split("-")[1])
 
-        with open(self.file_path_pkl, "rb") as f:
-            self.datas = pickle.load(f)
+        #txt
+        # with open(self.file_path_txt, "r", encoding="utf-8") as f:
+        #     f.readline()
+        #     for item in f:
+        #         info = item.strip().split()
 
-        # self.datas = []
+        #         user = Health_info(info[0], info[1], int(info[2]), info[3], float(info[4]), float(info[5]), float(info[6]), info[7])
+        #         self.datas.append(user)
+        # last_id = int(info[0].split("-")[1])
 
 
-        # for item in data:
-        #     info = Health_info(item["id"],
-        #                        item["name"],
-        #                        item["birth"],
-        #                        item["gender"],
-        #                        item["height"],
-        #                        item["weight"],
-        #                        item["bmi"],
-        #                        item["status"])
-        #     self.datas.append(info)
-        # last_id = int(item["id"].split("-")[1])
-                
 
     def update_file(self):
         data = []
@@ -115,35 +118,25 @@ class Health_Manager:
                          "status": info.status})
 
         # json
-        # with open(self.file_path_json, "w", encoding= "utf-8") as f:
-        #     json.dump(data, f, ensure_ascii=False, indent = 4)
-        #     #json.dump(데이터, 파일 객체, 유니코드 변환 여부, 들여쓰기 칸)
+        with open(self.file_path_json, "w", encoding= "utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent = 4)
+            #json.dump(데이터, 파일 객체, 유니코드 변환 여부, 들여쓰기 칸)
         
         # csv
         # newline: 열마다 들어갈 값?, DictWriter: 데이터가 디렉토리 형태일 때 사용(Writer은 list형태), 헤더 사용 필요, rows: 데이터 다수일 때
-        with open(self.file_path_csv, "w", newline = "", encoding="utf-8-sig") as f:
-            field = ["id", "name", "birth", "gender", "height", "weight", "bmi", "status"]
-            writer = csv.DictWriter(f, fieldnames=field)
-            writer.writeheader()
-            writer.writerows(data)
+        # with open(self.file_path_csv, "w", newline = "", encoding="utf-8-sig") as f:
+        #     field = ["id", "name", "birth", "gender", "height", "weight", "bmi", "status"]
+        #     writer = csv.DictWriter(f, fieldnames=field)
+        #     writer.writeheader()
+        #     writer.writerows(data)
 
+        # pkl
+        # with open(self.file_path_pkl, "wb") as f:
+        #     pickle.dump(data, f)
 
-    def random_id(self):
-        # AI 사용
-        # 종류 및 목적: ChatGPT, 0000 형식에 맞게 숫자 변환하기
-        # 사용한 프롬프트: 0001, 0002와 같이 숫자를 입력하면 앞에 0이 붙게 하는 법
-        return f"P2026-{(last_id + 1):04d}"
+        # txt
+        # with open(self.file_path_txt, "w", encoding="utf-8") as f:
+        #     f.write("id name birth gender height weight bmi status\n")
 
-    def add_file(self):
-        id = self.random_id()
-        name = input("이름을 입력하세요: ")
-        birth = int(input("태어난 연도를 입력하세요: "))
-        gender = input("성별을 입력하세요(남/여): ")
-        height = float(input("키를 입력하세요: "))
-        weight = float(input("몸무게를 입력하세요: "))
-        temp = Health_info(id, name, birth, gender, height, weight, 0, "")
-        bmi = temp.get_bmi()
-        status = temp.bmi_to_text(bmi)
-
-        user_info = Health_info(id, name, birth, gender, height, weight, bmi, status)
-        self.datas.append(user_info)
+        #     for info in data:
+        #         f.write(f"{info["id"]} {info["name"]} {info["birth"]} {info["gender"]} {info["height"]} {info["weight"]} {info["bmi"]:.2f} {info["status"]}\n")
