@@ -7,6 +7,8 @@ import pickle
 
 import os
 
+from modules import health_logic
+
 class Health_info:
     def __init__(self, id, name, birth, gender, height, weight, bmi, status):
         self.id = id
@@ -20,7 +22,7 @@ class Health_info:
 
     def get_bmi(self):
         bmi = self.weight / ((self.height / 100)**2)
-        return round(bmi,1)
+        return round(bmi,2)
 
     def bmi_to_text(self, bmi):
         if bmi <= 18.5:
@@ -34,6 +36,7 @@ class Health_info:
 
 class Health_Manager:
     def __init__(self):
+        self.last_id = 0
         self.datas = []
         # AI 사용
         # 종류 및 목적: chatgpt, 파일이 존재하지 않는 경우 메세지 생성
@@ -62,35 +65,33 @@ class Health_Manager:
         
 
     def load_file(self):
-        global last_id
-
         self.datas = []
 
         # json
-        with open(self.file_path_json, "r", encoding= "utf-8") as f:
-            data = json.load(f)
+        # with open(self.file_path_json, "r", encoding= "utf-8") as f:
+        #    data = json.load(f)
             # 파일 읽기
 
         # csv
         # 데이터 읽을 때: stf-8-sig(BOM 문자가 포함 될 경우 사용)
-        # with open(self.file_path_csv, "r", encoding="utf-8-sig") as f:
-        #     data = csv.DictReader(f)
+        with open(self.file_path_csv, "r", encoding="utf-8-sig") as f:
+            data = csv.DictReader(f)
         
         # pkl
         # with open(self.file_path_pkl, "rb") as f:
         #     data = pickle.load(f)
 
-        for item in data:
-            info = Health_info(item["id"],
-                               item["name"],
-                               item["birth"],
-                               item["gender"],
-                               item["height"],
-                               item["weight"],
-                               item["bmi"],
-                               item["status"])
-            self.datas.append(info)
-        last_id = int(item["id"].split("-")[1])
+            for item in data:
+                info = Health_info(item["id"],
+                                item["name"],
+                                item["birth"],
+                                item["gender"],
+                                item["height"],
+                                item["weight"],
+                                item["bmi"],
+                                item["status"])
+                self.datas.append(info)
+            self.last_id = int(item["id"].split("-")[1])
 
         #txt
         # with open(self.file_path_txt, "r", encoding="utf-8") as f:
@@ -124,19 +125,18 @@ class Health_Manager:
         
         # csv
         # newline: 열마다 들어갈 값?, DictWriter: 데이터가 디렉토리 형태일 때 사용(Writer은 list형태), 헤더 사용 필요, rows: 데이터 다수일 때
-        # with open(self.file_path_csv, "w", newline = "", encoding="utf-8-sig") as f:
-        #     field = ["id", "name", "birth", "gender", "height", "weight", "bmi", "status"]
-        #     writer = csv.DictWriter(f, fieldnames=field)
-        #     writer.writeheader()
-        #     writer.writerows(data)
+        with open(self.file_path_csv, "w", newline = "", encoding="utf-8-sig") as f:
+            field = ["id", "name", "birth", "gender", "height", "weight", "bmi", "status"]
+            writer = csv.DictWriter(f, fieldnames=field)
+            writer.writeheader()
+            writer.writerows(data)
 
         # pkl
-        # with open(self.file_path_pkl, "wb") as f:
-        #     pickle.dump(data, f)
+        with open(self.file_path_pkl, "wb") as f:
+            pickle.dump(data, f)
 
         # txt
-        # with open(self.file_path_txt, "w", encoding="utf-8") as f:
-        #     f.write("id name birth gender height weight bmi status\n")
-
-        #     for info in data:
-        #         f.write(f"{info["id"]} {info["name"]} {info["birth"]} {info["gender"]} {info["height"]} {info["weight"]} {info["bmi"]:.2f} {info["status"]}\n")
+        with open(self.file_path_txt, "w", encoding="utf-8") as f:
+            f.write("id name birth gender height weight bmi status\n")
+            for info in data:
+                f.write(f"{info["id"]} {info["name"]} {info["birth"]} {info["gender"]} {info["height"]} {info["weight"]} {info["bmi"]} {info["status"]}\n")

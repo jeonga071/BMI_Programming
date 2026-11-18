@@ -2,11 +2,11 @@
     {
         "id": "P2026-0001",
         "name": "홍길동",
-        "birth": 1995,
+        "birth": "1995",
         "gender": "남",
-        "height": 175.0,
-        "weight": 72.5,
-        "bmi": 23.67,
+        "height": "175",
+        "weight": "72.5",
+        "bmi": "23.67",
         "status": "과체중"
     },
     {
@@ -16,17 +16,7 @@
         "gender": "여",
         "height": 162.0,
         "weight": 52.0,
-        "bmi": 19.81,
+        "bmi": 19.8,
         "status": "정상"
-    },
-    {
-        "id": "P2026-0003",
-        "name": "김철수",
-        "birth": 2000,
-        "gender": "남",
-        "height": 100.0,
-        "weight": 80.0,
-        "bmi": 80.0,
-        "status": "비만"
     }
 ]
