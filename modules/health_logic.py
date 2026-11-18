@@ -39,7 +39,10 @@ class Create_data:
 class Retrieve_data:
     def __init__(self, manager:health_db.Health_Manager):
         self.manager = manager
-        self.number = 0
-    def search(self):
-        self.number = int(input("1. 전체 조회, 2. 회원 조회:"))
-        
+        self.number = int(input(""))
+        self.name = ""
+    def full_search(self):
+        for data in self.manager.datas:
+            print(f"id: {data.id}, name: {data.name}, birth: {data.birth}, gender: {data.gender}, height: {data.height}, weight: {data.weight}, bmi: {data.bmi}, status: {data.status}")
+    
+    
